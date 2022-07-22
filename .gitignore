@@ -1,0 +1,7 @@
+*.log
+.env
+grafana.db
+alerting/
+plugins/
+influxdb2/
+ldap.toml

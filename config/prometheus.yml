@@ -1,0 +1,52 @@
+# my global config
+global:
+  #scrape_interval: 1m # Set the interval to scrape data. Default is every 1 minute.
+  #evaluation_interval: 1m # Set interval to evaluate rules. The default is every 1 minute.
+  #scrape_timeout: 10s # Set scrape timeout period. global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      # - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'prometheus'
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+    - targets: ['localhost:9090']
+
+  - job_name: 'bbX01'
+    scrape_timeout: 10s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]  # Look for a HTTP 200 response.
+    static_configs:
+      - targets:
+        - https://www.lucidusit.co.uk
+        - https://www.boroughbridgefeathers.co.uk
+        - https://www.google.co.uk
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: bbDev:9115  # The blackbox exporter's real hostname:port.
+
+  - job_name: 'vcenterX01'
+    metrics_path: '/metrics'
+    scrape_timeout: 30s
+    static_configs:
+      - targets:
+        - 'vxDev:9272'

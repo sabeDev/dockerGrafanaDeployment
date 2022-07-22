@@ -1,0 +1,76 @@
+version: "3.7"
+services:
+  grafanaDev:
+    container_name: grafanaDev
+    # image: grafana/grafana:8.2.1
+    image: grafana/grafana:9.0.2
+    restart: always
+    env_file: .env
+    ports:
+      - "80:3000"
+    volumes:
+      - ./config/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./config/ldap.toml:/etc/grafana/ldap.toml
+      - ./logs:/var/log/grafana
+      - ./shared:/shared
+      - ./grafana:/var/lib/grafana
+    environment:
+      - LDAP_PASSWORD=$PASSWORD_LDAP
+    networks:
+      - grafdevnet 
+
+  influxdb:
+    container_name: influxDBDev
+    image: influxdb:latest
+    volumes:
+      # Mount for influxdb data directory and configuration
+      - ./config/influxdb2:/var/lib/influxdb2:rw
+    ports:
+      - "8086:8086"
+    networks:
+      - grafdevnet 
+
+  promdev:
+    container_name: promdev
+    image: prom/prometheus:latest
+    restart: always
+    volumes:
+        - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+        - ./prometheus:/var/lib/prometheus
+    command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+    ports:
+        - 9090:9090
+    networks:
+      - grafdevnet 
+
+  bbDev:
+    container_name: bbDev
+    image: prom/blackbox-exporter
+    restart: always
+    environment:
+      - config.file="/config.yml"
+    volumes:
+      - ./config/blackbox-exporter.yml:/etc/blackbox_exporter/config.yml   
+    ports:
+      - '9115:9115'
+    networks:
+      - grafdevnet 
+
+  vxDev:
+    container_name: vxDev
+    image: pryorda/vmware_exporter:latest
+    restart: always
+    ports:
+      - 9272:9272
+    environment:
+      VSPHERE_HOST: $VCENTER01
+      VSPHERE_IGNORE_SSL: "True"
+      VSPHERE_USER: $VCENTER01user
+      VSPHERE_PASSWORD: $PASSWORD_VCENTER01
+    networks:
+      - grafdevnet
+      
+networks:
+  grafdevnet:
+    driver: bridge 

@@ -1,0 +1,27 @@
+[[servers]]
+host = "ipaddress ipaddress"
+port = 3269
+use_ssl = true
+start_tls = false
+ssl_skip_verify = true
+bind_dn = "bindUser@domain"
+bind_password = "${LDAP_PASSWORD}"
+search_filter = "(sAMAccountName=%s)"
+search_base_dns = ["dc=example,dc=com"]
+
+[servers.attributes]
+name = "givenName"
+surname = "sn"
+username = "sAMAccountName"
+member_of = "memberOf"
+email =  "mail"
+
+[[servers.group_mappings]]
+group_dn = "CN=SCOM Administrators,OU=SCOM,OU=AccessGroups,OU=Users,OU=Organisation,DC=example,DC=com"
+org_role = "Admin"
+# grafana_admin = true
+
+[[servers.group_mappings]]
+group_dn = "CN=SCOM VirtualAdmins,OU=AccessGroups,OU=Organisation,DC=example,DC=com"
+org_role = "Viewer"
+
