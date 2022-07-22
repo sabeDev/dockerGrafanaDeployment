@@ -34,7 +34,6 @@ scrape_configs:
     static_configs:
       - targets:
         - https://www.lucidusit.co.uk
-        - https://www.boroughbridgefeathers.co.uk
         - https://www.google.co.uk
     relabel_configs:
       - source_labels: [__address__]

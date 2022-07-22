@@ -5,3 +5,5 @@ alerting/
 plugins/
 influxdb2/
 ldap.toml
+.gitignore
+
