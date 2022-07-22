@@ -16,5 +16,9 @@ In the grafana.ini, there is a line `config_file = /etc/grafana/ldap.toml`. This
 
 Simple rename to `ldap.toml` and add any configuraiton.
 
+# Prometheus
+There are configurations for VMWare & BlackBox (website monitoring)
+I have left some of my configurations, feel free to remove.
+
 
 
